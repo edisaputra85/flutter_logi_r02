@@ -45,7 +45,12 @@ class DbHelper {
   //Create record / insert record into table users
   Future<int> insertUser(User object) async {
     Database db = await this.getDatabase();
-    int count = await db.insert('users', object.toMap());
+    int count;
+    try {
+      count = await db.insert('users', object.toMap());
+    } catch (e) {
+      print('SQL Error');
+    }
     return count;
   }
 
@@ -54,6 +59,16 @@ class DbHelper {
     List<Map<String, dynamic>> mapList;
     Database db = await this.getDatabase();
     mapList = await db.query('users');
+    return mapList;
+  }
+
+  //Select semua user
+  Future<List<Map<String, dynamic>>> selectUser(
+      String username, String password) async {
+    List<Map<String, dynamic>> mapList;
+    Database db = await this.getDatabase();
+    mapList = await db.query('users',
+        where: "username = '$username' AND password = '$password'");
     return mapList;
   }
 }
